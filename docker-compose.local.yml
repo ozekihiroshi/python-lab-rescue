@@ -1,0 +1,69 @@
+name: python-lab-rescue
+
+services:
+  singleuser-image:
+    image: ${LAB_SINGLEUSER_IMAGE:-python-lab-rescue-singleuser:2026-07-28}
+    build:
+      context: .
+      dockerfile: singleuser/Dockerfile
+      args:
+        BASE_IMAGE: quay.io/jupyter/minimal-notebook:2026-07-28@sha256:230b7474518c193143d253822fd86fa0a850aa31e18a74952d940782157d373d
+        JUPYTERHUB_VERSION: 5.5.0
+        PANDAS_VERSION: 3.0.2
+        MATPLOTLIB_VERSION: 3.10.8
+        OPENPYXL_VERSION: 3.1.5
+    profiles: ["build"]
+    command: ["python", "-c", "print('single-user image ready')"]
+
+  jupyterhub:
+    image: python-lab-rescue-hub:5.5.0
+    build:
+      context: .
+      dockerfile: hub/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${LAB_PORT:-8086}:8000"
+    environment:
+      LAB_AUTH_MODE: ${LAB_AUTH_MODE:-local}
+      LAB_LOCAL_DEVELOPMENT: ${LAB_LOCAL_DEVELOPMENT:-false}
+      LAB_LOCAL_PASSWORD: ${LAB_LOCAL_PASSWORD:?Set LAB_LOCAL_PASSWORD in .env}
+      LAB_ADMIN_USERS: ${LAB_ADMIN_USERS:-admin}
+      LAB_DOCKER_NETWORK: ${LAB_NETWORK_NAME:-python-lab-rescue-internal}
+      LAB_SINGLEUSER_IMAGE: ${LAB_SINGLEUSER_IMAGE:-python-lab-rescue-singleuser:2026-07-28}
+      LAB_USER_VOLUME_PREFIX: ${LAB_USER_VOLUME_PREFIX:-python-lab-user}
+      LAB_MEM_LIMIT: ${LAB_MEM_LIMIT:-1G}
+      LAB_CPU_LIMIT: ${LAB_CPU_LIMIT:-1.0}
+      LAB_PIDS_LIMIT: ${LAB_PIDS_LIMIT:-256}
+      LTI13_ISSUER: ${LTI13_ISSUER:-}
+      LTI13_CLIENT_ID: ${LTI13_CLIENT_ID:-}
+      LTI13_AUTHORIZE_URL: ${LTI13_AUTHORIZE_URL:-}
+      LTI13_JWKS_ENDPOINT: ${LTI13_JWKS_ENDPOINT:-}
+      LTI13_USERNAME_KEY: ${LTI13_USERNAME_KEY:-sub}
+      LTI13_URI_SCHEME: ${LTI13_URI_SCHEME:-auto}
+    volumes:
+      - hub_data:/srv/jupyterhub/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - lab_internal
+      - local_access
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/hub/health', timeout=3)"
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  hub_data:
+
+networks:
+  lab_internal:
+    name: ${LAB_NETWORK_NAME:-python-lab-rescue-internal}
+    internal: true
+  local_access:

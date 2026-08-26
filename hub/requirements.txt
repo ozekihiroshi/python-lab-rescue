@@ -1,0 +1,3 @@
+dockerspawner==14.0.0
+jupyterhub-nativeauthenticator==1.3.0
+jupyterhub-ltiauthenticator==1.6.3

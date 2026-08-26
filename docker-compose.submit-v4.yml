@@ -1,0 +1,15 @@
+services:
+  jupyterhub:
+    build:
+      context: .
+      dockerfile: hub/Dockerfile.submit-v3
+    command: ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config_submit_v2.py"]
+    environment:
+      PYTHON_LAB_SUBMIT_SECRET: ${PYTHON_LAB_SUBMIT_SECRET:?Set PYTHON_LAB_SUBMIT_SECRET}
+      PYTHON_LAB_MOODLE_SUBMIT_URL: ${PYTHON_LAB_MOODLE_SUBMIT_URL:-http://moodle-rescue-local/local/pythonlabsubmit/submit.php}
+      PYTHON_LAB_MOODLE_CANONICAL_HOST: ${PYTHON_LAB_MOODLE_CANONICAL_HOST:-localhost:8083}
+    networks:
+      - lab_internal
+      - local_access
+      - hub_services
+      - moodle_local

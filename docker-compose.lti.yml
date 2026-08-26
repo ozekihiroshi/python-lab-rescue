@@ -1,0 +1,42 @@
+services:
+  moodle-jwks-proxy:
+    image: python-lab-rescue-hub:5.5.0
+    restart: unless-stopped
+    command: ["python", "/srv/jupyterhub/moodle-jwks-proxy.py"]
+    environment:
+      MOODLE_JWKS_UPSTREAM: http://moodle-rescue-local/mod/lti/certs.php
+      MOODLE_CANONICAL_HOST: localhost:8083
+    networks:
+      - hub_services
+      - moodle_local
+    read_only: true
+    tmpfs:
+      - /tmp:mode=0700
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+
+  jupyterhub:
+    depends_on:
+      moodle-jwks-proxy:
+        condition: service_healthy
+    networks:
+      - hub_services
+
+networks:
+  hub_services:
+    internal: true
+  moodle_local:
+    external: true
+    name: ${MOODLE_DOCKER_NETWORK:-moodle-rescue-local_local_access}
