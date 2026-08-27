@@ -5,11 +5,14 @@ This repository is intentionally separate from `moodle-rescue`: Moodle owns
 learning content, quizzes, assignments, and grades; Python Lab owns code
 execution and learners' live notebook workspaces.
 
-## Current scope
+## Status
 
-The current stage is local-only and runs with the Docker Engine inside WSL.
-It does not use Docker Desktop, the existing Traefik deployment, or S3. It
-supports direct development login and Moodle LTI 1.3 login.
+This is an alpha release. Local development runs with the Docker Engine inside
+WSL and does not require Docker Desktop. An invite-only pilot can use Moodle
+LTI 1.3 over HTTPS through the separate Traefik Rescue gateway. The same-host
+pilot is not the recommended trust boundary for a broad public service;
+JupyterHub controls Docker to create learner containers, so larger deployments
+should place Python Lab on a dedicated host.
 
 It provides:
 
@@ -18,7 +21,7 @@ It provides:
 - A dated Jupyter minimal-notebook base image with only course-required packages
 - pandas, matplotlib, openpyxl, and the standard scientific Python stack
 - One disposable container and one persistent named volume per learner
-- A starter notebook and fictional learning-centre CSV
+- Bilingual lesson notebooks, practical projects, fictional CSV data, and checks
 - CPU, memory, process, capability, and network restrictions
 
 ## Start in WSL
@@ -52,9 +55,10 @@ The reproducible Moodle registration is owned by `moodle-rescue`. Its
 `scripts/configure-python-lab-lti.php` creates the site tool and adds the
 `Python Lab` activity to `PYAI-INTRO`.
 
-`scripts/configure-python-lab-notebooks.php` then adds 12 lesson activities and
-five project activities. Each LTI launch opens its exact notebook rather than
-the JupyterLab file browser. The notebooks use one connected learning-centre
+`scripts/configure-python-lab-notebooks.php` registers the lesson and project
+activities for the bundled course release. Each launch opens its exact notebook
+rather than the JupyterLab file browser. The notebooks use one connected
+learning-centre
 story from basic output through CSV cleaning, visualisation, and chunked
 processing.
 
@@ -76,6 +80,13 @@ Course-material releases use a versioned startup marker and merge missing
 files recursively, including files added later inside an existing `data/`
 directory. Existing learner files are never overwritten, while course copies
 remain writable so notebooks can be edited and saved in the learner volume.
+
+## Invite-only HTTPS pilot
+
+For a same-host pilot with Traefik Rescue, follow
+[the production guide](docs/production-with-traefik-rescue.md). It removes the
+loopback Hub port, requires HTTPS Moodle LTI endpoints, and does not use the
+local JWKS proxy. Review [SECURITY.md](SECURITY.md) before exposing the service.
 
 ## Verify persistence
 
@@ -107,17 +118,23 @@ Do not run `docker compose down -v`: `-v` deletes Hub state. Learner volumes
 are dynamically created outside the Compose volume list, but they are also
 material data and must be removed only by an explicit, verified operation.
 
-## Next stages
+## Alpha limitations
 
-The local LTI 1.3 launch and topic-specific notebook links are implemented.
-Two Moodle learners tested from the same client receive separate named volumes;
-new course materials are added without replacing their saved work. The final
-infrastructure stage moves shared Traefik ownership out of `demand-monitor`
-and publishes Moodle and Python Lab as separate HTTPS services. See
-`docs/architecture.md`, `docs/production-with-traefik-rescue.md`, and
-`SECURITY.md` before deployment. The production override and verification
-script support an invite-only same-host pilot; a wider service should isolate
-Python Lab on a dedicated host.
+The local LTI launch, learner-volume separation, course-material updates, and
+topic-specific notebook links have been exercised. The production override and
+verification script support an invite-only same-host pilot through Traefik
+Rescue. The following are not complete production guarantees:
+
+- no high-availability Hub or multi-host scheduler;
+- no bundled backup scheduler or automated restore rehearsal for learner volumes;
+- no isolation of Docker control beyond the documented host boundary;
+- no offline mode;
+- no promise of preserving files deleted or replaced manually by a learner;
+- no broad public deployment security review.
+
+Read [the architecture stages](docs/architecture.md),
+[the Traefik Rescue production guide](docs/production-with-traefik-rescue.md),
+and [SECURITY.md](SECURITY.md) before deployment.
 
 ## License
 

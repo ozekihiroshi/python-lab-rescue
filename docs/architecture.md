@@ -1,6 +1,6 @@
 # Architecture stages
 
-## Current local stage
+## Local development stage
 
 - Independent `python-lab-rescue` Compose project
 - WSL-hosted Docker Engine; Docker Desktop is not required
@@ -30,10 +30,10 @@ from a replacement container.
   volumes and recover only their own saved marker after reopening Python Lab
 - Site-specific Client IDs and endpoints stay outside course `.mbz` backups
 
-## Final shared-ingress stage
+## Alpha shared-ingress stage
 
-- Move Traefik and ACME state out of `demand-monitor` into a neutral edge project
-- Create a neutral external network such as `traefik-public`
+- Traefik Rescue owns the neutral gateway configuration and ACME state
+- The shared external proxy network is named `rescue_proxy` by default
 - Attach only the JupyterHub proxy-facing service to that network
 - Keep learner containers on the private Python Lab network
 - Publish Moodle and Python Lab on separate HTTPS hostnames
