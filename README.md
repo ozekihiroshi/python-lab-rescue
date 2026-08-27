@@ -114,4 +114,7 @@ Two Moodle learners tested from the same client receive separate named volumes;
 new course materials are added without replacing their saved work. The final
 infrastructure stage moves shared Traefik ownership out of `demand-monitor`
 and publishes Moodle and Python Lab as separate HTTPS services. See
-`docs/architecture.md` and `SECURITY.md` before deployment.
+`docs/architecture.md`, `docs/production-with-traefik-rescue.md`, and
+`SECURITY.md` before deployment. The production override and verification
+script support an invite-only same-host pilot; a wider service should isolate
+Python Lab on a dedicated host.

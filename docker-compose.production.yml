@@ -1,0 +1,19 @@
+services:
+  jupyterhub:
+    ports: !reset []
+    labels:
+      - traefik.enable=true
+      - traefik.rescue.gateway=true
+      - traefik.docker.network=${TRAEFIK_NETWORK:-rescue_proxy}
+      - traefik.http.routers.python-lab.rule=Host(`${LAB_HOST:?Set LAB_HOST in .env.production}`)
+      - traefik.http.routers.python-lab.entrypoints=websecure
+      - traefik.http.routers.python-lab.tls.certresolver=myresolver
+      - traefik.http.services.python-lab.loadbalancer.server.port=8000
+    networks: !override
+      - lab_internal
+      - proxy
+
+networks:
+  proxy:
+    external: true
+    name: ${TRAEFIK_NETWORK:-rescue_proxy}
