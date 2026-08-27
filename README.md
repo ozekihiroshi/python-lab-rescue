@@ -118,3 +118,14 @@ and publishes Moodle and Python Lab as separate HTTPS services. See
 `SECURITY.md` before deployment. The production override and verification
 script support an invite-only same-host pilot; a wider service should isolate
 Python Lab on a dedicated host.
+
+## License
+
+The Docker, JupyterHub, integration, verification, and executable source code
+in this repository is licensed under GNU GPL version 3 or, at your option, any
+later version (`GPL-3.0-or-later`). See [LICENSE](LICENSE).
+
+The original learner-facing course materials under `course-materials/` are
+licensed under Creative Commons Attribution 4.0 International (`CC BY 4.0`).
+See [CONTENT-LICENSE.txt](CONTENT-LICENSE.txt) for attribution and scope.
+Bundled third-party software and base images retain their own licenses.
