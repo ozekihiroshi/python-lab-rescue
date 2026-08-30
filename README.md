@@ -88,6 +88,17 @@ For a same-host pilot with Traefik Rescue, follow
 loopback Hub port, requires HTTPS Moodle LTI endpoints, and does not use the
 local JWKS proxy. Review [SECURITY.md](SECURITY.md) before exposing the service.
 
+The Moodle course may be published for password-free guest reading, but Python
+Lab is not an anonymous execution service. Learners must sign in to Moodle and
+launch the Lab through LTI 1.3 so that each persistent workspace has a stable
+owner. Do not publish the local DummyAuthenticator endpoint or give anonymous
+guests a shared Lab identity.
+
+The Moodle assignment submission bridge is optional. Set
+`PYTHON_LAB_SUBMIT_ENABLED=true` only after configuring the matching secret and
+HTTPS submission endpoint in `moodle-rescue`; otherwise learners can still save
+their work in Python Lab and use the course's manual download/upload route.
+
 ## Verify persistence
 
 ```sh

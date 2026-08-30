@@ -83,14 +83,30 @@ c.Spawner.http_timeout = 60
 c.JupyterHub.shutdown_on_logout = False
 c.JupyterHub.cleanup_servers = True
 
-c.JupyterHub.services = [
-    {
-        "name": "moodle-submit",
-        "command": ["python", "/srv/jupyterhub/moodle-submit-service.py"],
-        "url": "http://127.0.0.1:8090",
-    }
-]
+c.JupyterHub.services = []
+c.Spawner.environment = {}
 
-c.Spawner.environment = {
-    "PYTHON_LAB_SUBMIT_URL": "http://jupyterhub:8090/api/submit",
-}
+if enabled("PYTHON_LAB_SUBMIT_ENABLED"):
+    submitsecret = required("PYTHON_LAB_SUBMIT_SECRET")
+    if len(submitsecret) < 32:
+        raise RuntimeError("PYTHON_LAB_SUBMIT_SECRET must contain at least 32 characters")
+    moodlesubmiturl = required("PYTHON_LAB_MOODLE_SUBMIT_URL")
+    if not enabled("LAB_LOCAL_DEVELOPMENT") and not moodlesubmiturl.startswith("https://"):
+        raise RuntimeError("Production Moodle submission URL must use HTTPS")
+    c.JupyterHub.services = [
+        {
+            "name": "moodle-submit",
+            "command": ["python", "/srv/jupyterhub/moodle-submit-service-v2.py"],
+            "url": "http://127.0.0.1:8090",
+            "environment": {
+                "PYTHON_LAB_MOODLE_SUBMIT_URL": moodlesubmiturl,
+                "PYTHON_LAB_MOODLE_CANONICAL_HOST": os.environ.get(
+                    "PYTHON_LAB_MOODLE_CANONICAL_HOST", ""
+                ),
+                "PYTHON_LAB_SUBMIT_SECRET": submitsecret,
+            },
+        }
+    ]
+    c.Spawner.environment = {
+        "PYTHON_LAB_SUBMIT_URL": "http://jupyterhub:8090/api/submit",
+    }

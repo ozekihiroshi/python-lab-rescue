@@ -24,6 +24,19 @@ Set the public Moodle and Lab hostnames, Moodle LTI Client ID, and public HTTPS
 Moodle endpoints. Do not use `docker-compose.lti.yml`; its JWKS proxy exists
 only for the loopback local-development topology.
 
+## Public course and Lab access are different
+
+The Moodle course can allow password-free guest reading for a limited public
+period. Python Lab must still require a Moodle account and an LTI 1.3 launch.
+Guest readers must not be mapped to a shared JupyterHub user or volume. Keep the
+Lab activity unavailable to guests and test this explicitly in a private
+browser before publishing the course URL.
+
+The optional assignment submission bridge is disabled by default. Enable it
+only after `moodle-rescue` has the matching secret and HTTPS endpoint. Without
+the bridge, notebook persistence and manual Moodle file submission continue to
+work.
+
 Validate without starting containers:
 
 ```sh

@@ -14,3 +14,6 @@ c.JupyterHub.services = [  # noqa: F821
         },
     }
 ]
+c.Spawner.environment = {  # noqa: F821
+    "PYTHON_LAB_SUBMIT_URL": "http://jupyterhub:8090/api/submit",
+}

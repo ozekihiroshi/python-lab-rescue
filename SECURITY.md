@@ -27,3 +27,8 @@ threat review. Before serving a wider or less trusted audience, isolate Docker
 control on a dedicated host or stronger daemon boundary and test incident
 recovery.
 Do not reuse the local password in any deployed environment.
+
+A guest-readable Moodle course does not authorize anonymous Python execution.
+Require a Moodle account for every LTI launch so each JupyterHub identity and
+persistent volume has one accountable owner. Confirm that the Moodle guest role
+cannot launch the external tool before advertising the Lab.

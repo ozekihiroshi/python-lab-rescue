@@ -6,6 +6,7 @@ RUN python -m pip install --no-cache-dir -r /tmp/requirements.txt \
 
 COPY hub/jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 COPY hub/moodle-jwks-proxy.py /srv/jupyterhub/moodle-jwks-proxy.py
+COPY hub/moodle-submit-service-v2.py /srv/jupyterhub/moodle-submit-service-v2.py
 
 WORKDIR /srv/jupyterhub
 CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]

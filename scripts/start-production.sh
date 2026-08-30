@@ -44,6 +44,21 @@ case "$LTI13_ISSUER $LTI13_AUTHORIZE_URL $LTI13_JWKS_ENDPOINT" in
         ;;
 esac
 
+if [ "${PYTHON_LAB_SUBMIT_ENABLED:-false}" = true ]; then
+    submit_secret=${PYTHON_LAB_SUBMIT_SECRET:-}
+    [ "${#submit_secret}" -ge 32 ] || {
+        echo "PYTHON_LAB_SUBMIT_SECRET must contain at least 32 characters." >&2
+        exit 1
+    }
+    case "${PYTHON_LAB_MOODLE_SUBMIT_URL:-}" in
+        https://*) ;;
+        *)
+            echo "PYTHON_LAB_MOODLE_SUBMIT_URL must be an HTTPS URL in production." >&2
+            exit 1
+            ;;
+    esac
+fi
+
 network=${TRAEFIK_NETWORK:-rescue_proxy}
 docker network inspect "$network" >/dev/null 2>&1 || {
     echo "Missing external Traefik network: $network" >&2

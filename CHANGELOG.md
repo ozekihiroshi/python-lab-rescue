@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- Make the Moodle assignment submission bridge explicitly optional and include
+  its service implementation in clean production Hub images.
+- Validate HTTPS submission settings before production startup.
+
+### Security
+
+- Document that guest-readable Moodle courses do not provide anonymous Python
+  Lab execution; every Lab workspace requires an authenticated Moodle LTI
+  identity.
+
 ## [0.1.0-alpha.1] - 2026-08-27
 
 ### Added

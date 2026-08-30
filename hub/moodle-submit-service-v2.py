@@ -110,17 +110,20 @@ class Handler(BaseHTTPRequestHandler):
             timestamp.encode() + b"\n" + nonce.encode() + b"\n" + upstream_body,
             hashlib.sha256,
         ).hexdigest()
+        upstream_headers = {
+            "Content-Type": "application/json",
+            "X-Python-Lab-Timestamp": timestamp,
+            "X-Python-Lab-Nonce": nonce,
+            "X-Python-Lab-Signature": f"sha256={digest}",
+        }
+        canonicalhost = os.environ.get("PYTHON_LAB_MOODLE_CANONICAL_HOST", "").strip()
+        if canonicalhost:
+            upstream_headers["Host"] = canonicalhost
         upstream_request = urllib.request.Request(
             MOODLE_SUBMIT_URL,
             data=upstream_body,
             method="POST",
-            headers={
-                "Content-Type": "application/json",
-                "Host": os.environ.get("PYTHON_LAB_MOODLE_CANONICAL_HOST", "localhost:8083"),
-                "X-Python-Lab-Timestamp": timestamp,
-                "X-Python-Lab-Nonce": nonce,
-                "X-Python-Lab-Signature": f"sha256={digest}",
-            },
+            headers=upstream_headers,
         )
         try:
             with urllib.request.urlopen(upstream_request, timeout=20) as response:
