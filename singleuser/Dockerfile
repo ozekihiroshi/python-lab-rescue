@@ -15,7 +15,12 @@ RUN python -m pip install --no-cache-dir \
 
 COPY --chown=${NB_UID}:${NB_GID} course-materials/ /opt/python-lab/course-materials/
 COPY singleuser/start-notebook.d/10-python-lab-materials.sh /usr/local/bin/start-notebook.d/10-python-lab-materials.sh
+COPY singleuser/python_lab_oauth_state.py /tmp/python_lab_oauth_state.py
 RUN chmod 0755 /usr/local/bin/start-notebook.d/10-python-lab-materials.sh \
-    && chmod -R a-w /opt/python-lab/course-materials
+    && chmod -R a-w /opt/python-lab/course-materials \
+    && site_dir="$(python -c 'import site; print(site.getsitepackages()[0])')" \
+    && install -m 0644 /tmp/python_lab_oauth_state.py "${site_dir}/python_lab_oauth_state.py" \
+    && printf 'import python_lab_oauth_state\n' > "${site_dir}/python_lab_oauth_state.pth" \
+    && rm -f /tmp/python_lab_oauth_state.py
 
 USER ${NB_UID}

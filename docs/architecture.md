@@ -28,6 +28,8 @@ from a replacement container.
   and package imports are verified
 - Two Moodle learners tested from the same client receive distinct named
   volumes and recover only their own saved marker after reopening Python Lab
+- Single-user OAuth attempts always use distinct state-cookie names; two-tab
+  concurrent restart is verified without weakening callback state validation
 - Site-specific Client IDs and endpoints stay outside course `.mbz` backups
 
 ## Alpha shared-ingress stage

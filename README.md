@@ -76,10 +76,33 @@ validate Moodle signatures without publishing Moodle beyond
 `127.0.0.1:8083`. Only the Hub and proxy share their private service network;
 learner containers cannot reach the Moodle network.
 
+The submission overlay uses the distinct image name
+`python-lab-rescue-hub-submit:5.5.0`. Build the combined Compose configuration
+before using `--no-build`; the base Hub image does not contain
+`jupyterhub_config_submit_v2.py`.
+
+For the local Moodle LTI setup with direct submission enabled, use:
+
+```sh
+sh scripts/start-lti-submit-local.sh
+```
+
+This command validates LTI mode, builds the dated learner image and the
+submission-enabled Hub image, starts the JWKS proxy and Hub, and waits for the
+Hub health check.
+
 Course-material releases use a versioned startup marker and merge missing
 files recursively, including files added later inside an existing `data/`
 directory. Existing learner files are never overwritten, while course copies
 remain writable so notebooks can be edited and saved in the learner volume.
+
+The learner image also loads `singleuser/python_lab_oauth_state.py`. It gives
+every single-user OAuth attempt a distinct state-cookie name, including two
+initial requests that arrive before either response cookie is visible. State
+validation, HttpOnly, expiry, HTTPS detection, and configured cookie options
+remain in force. Run `scripts/check-lab-oauth-concurrency.py` against every
+rebuilt learner image and re-review this compatibility patch when changing the
+pinned JupyterHub version.
 
 ## Invite-only HTTPS pilot
 

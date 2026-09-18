@@ -1,5 +1,6 @@
 services:
   jupyterhub:
+    image: python-lab-rescue-hub-submit:5.5.0
     build:
       context: .
       dockerfile: hub/Dockerfile.submit-v3
