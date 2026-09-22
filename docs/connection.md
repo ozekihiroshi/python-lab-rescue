@@ -4,7 +4,7 @@ Labの実行・保存はこのリポジトリ、教材・受講者・評定はMo
 
 ## 管理者の初回接続（ローカルHTTP）
 
-Moodle側の[登録アダプター](https://github.com/ozekihiroshi/moodle-rescue/blob/codex/lab-connection-setup/docs/lab-connection-setup.md)を使います。現在は`codex/lab-connection-setup`ブランチで提供しています。MoodleとDockerネットワークを先に起動してください。
+Moodle側の[登録アダプター](https://github.com/ozekihiroshi/moodle-rescue/blob/main/docs/lab-connection-setup.md)を使います。mainに含まれる共通手順です。MoodleとDockerネットワークを先に起動してください。
 
 Moodleリポジトリで実行:
 
