@@ -157,3 +157,7 @@ The original learner-facing course materials under `course-materials/` are
 licensed under Creative Commons Attribution 4.0 International (`CC BY 4.0`).
 See [CONTENT-LICENSE.txt](CONTENT-LICENSE.txt) for attribution and scope.
 Bundled third-party software and base images retain their own licenses.
+
+## Moodle接続情報の取り込み
+
+Java Labと同じ登録情報JSONを`python3 scripts/setup.py connect <python.json>`で取り込めます。[初回導入・既存環境・直接提出の手順](docs/connection.md)を参照してください。

@@ -27,7 +27,7 @@ services:
       LAB_AUTH_MODE: ${LAB_AUTH_MODE:-local}
       LAB_LOCAL_DEVELOPMENT: ${LAB_LOCAL_DEVELOPMENT:-false}
       LAB_LOCAL_PASSWORD: ${LAB_LOCAL_PASSWORD:?Set LAB_LOCAL_PASSWORD in .env}
-      LAB_ADMIN_USERS: ${LAB_ADMIN_USERS:-admin}
+      LAB_ADMIN_USERS: ${LAB_ADMIN_USERS-admin}
       LAB_DOCKER_NETWORK: ${LAB_NETWORK_NAME:-python-lab-rescue-internal}
       LAB_SINGLEUSER_IMAGE: ${LAB_SINGLEUSER_IMAGE:-python-lab-rescue-singleuser:2026-07-28}
       LAB_USER_VOLUME_PREFIX: ${LAB_USER_VOLUME_PREFIX:-python-lab-user}

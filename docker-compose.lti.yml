@@ -4,8 +4,8 @@ services:
     restart: unless-stopped
     command: ["python", "/srv/jupyterhub/moodle-jwks-proxy.py"]
     environment:
-      MOODLE_JWKS_UPSTREAM: http://moodle-rescue-local/mod/lti/certs.php
-      MOODLE_CANONICAL_HOST: localhost:8083
+      MOODLE_JWKS_UPSTREAM: ${MOODLE_JWKS_UPSTREAM:-http://moodle-rescue-local/mod/lti/certs.php}
+      MOODLE_CANONICAL_HOST: ${MOODLE_CANONICAL_HOST:-localhost:8083}
     networks:
       - hub_services
       - moodle_local

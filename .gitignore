@@ -6,3 +6,9 @@ Thumbs.db
 # Python bytecode and tool caches
 __pycache__/
 *.py[cod]
+
+# Connection imports and per-deployment settings
+.env.*
+!.env.example
+!.env.production.example
+runtime/
